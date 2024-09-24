@@ -1,0 +1,98 @@
+#       My makelib gets standard definitions that I used in all makefiles.
+
+STUDENT := $(shell basename $$HOME)
+WORKDIR := $(shell basename `pwd`)
+ACCTDIR := $(shell dirname $$HOME)
+ACCTTYPE := $(shell basename $(ACCTDIR))
+ifeq ($(ACCTTYPE),KUTZTOWN)
+WWWACCT=faculty
+else
+WWWACCT=student
+endif
+ACCTWWW=/www/$(WWWACCT)/$(STUDENT)/
+
+# acad and mcgonagall setup
+# Python 2.6.6
+MACHINENAME := $(shell uname -n)
+ifeq ($(MACHINENAME),csitrd)
+PYTHON= /usr/bin/python
+PPATH= /home/KUTZTOWN/parson/DataMine
+else
+ifeq ($(MACHINENAME),kupapcsit01)
+PYTHON= /usr/local/bin/python2.7
+PPATH= /home/KUTZTOWN/parson/DataMine
+else
+PYTHON= python
+PPATH= $$PYTHONPATH
+endif
+endif
+
+CXXFILES := $(wildcard *.cxx)
+XOBJFILES := $(subst .cxx,.o,$(CXXFILES))
+CPPFILES := $(wildcard *.cpp)
+POBJFILES := $(subst .cpp,.o,$(CPPFILES))
+OBJFILES = $(XOBJFILES) $(POBJFILES)
+
+JAVAC = javac
+JAVAFILES := $(wildcard *.java)
+CLASSFILES := $(subst .java,.class,$(JAVAFILES))
+
+DOTFILES := $(wildcard *.dot)
+JPEGFILES := $(subst .dot,.jpg,$(DOTFILES))
+
+DEFFLAGS =
+
+ifeq ($(DEBUG),1)
+DEBUGFLAG = -g
+else
+DEBUGFLAG =
+endif
+
+INCFLAGS = -I.
+
+CPPFLAGS= $(DEFFLAGS) $(INCFLAGS) $(DEBUGFLAG)
+
+%.o :	%.cxx
+		/bin/bash -c "$(CPPCC) -c $(CPPFLAGS) $< -o $@"
+
+%.o :	%.cpp
+		/bin/bash -c "$(CPPCC) -c $(CPPFLAGS) $< -o $@"
+
+%.class:	%.java
+		/bin/bash -c "$(JAVAC) $(DEBUGFLAG) $<"
+
+%.jpg:	%.dot
+		/bin/bash -c "$(DOT) -Tjpeg $< > $@"
+
+javadoc:	FORCE
+			-mkdir $(ACCTWWW)
+			-mkdir $(ACCTWWW)/javadoc
+			chmod -R o+r+X $(ACCTWWW)
+			cd .. && javadoc -protected -d $(ACCTWWW) -sourcepath `pwd` $(WORKDIR)
+
+JARFILE=$(BASENAME).jar
+
+jar:		$(JARFILE)
+			jar uvf $(JARFILE) $(CLASSFILES)
+
+$(JARFILE):	$(CLASSFILES)
+			jar cvf $(JARFILE) $(CLASSFILES)
+
+subclean:	FORCE
+		/bin/rm -f *.o *.class $(JARFILE) core *.exe *.obj *.pyc
+
+clean:		FORCE
+
+FORCE:
+
+turnitin:		clean test
+		@echo
+		@echo Do you really want to send $(TARGET) to Professor Parson?
+		@echo Hit Enter to continue, control-C to abort.
+		@echo
+		@read keyboard
+		/bin/bash -c "cd .. ; /bin/chmod 700 .                  ; \
+		/bin/tar cvf ./$(TARGET)_$(STUDENT).tar $(WORKDIR)      ; \
+		/bin/gzip ./$(TARGET)_$(STUDENT).tar                    ; \
+		/bin/chmod 666 ./$(TARGET)_$(STUDENT).tar.gz            ; \
+		/bin/mv ./$(TARGET)_$(STUDENT).tar.gz ~parson/incoming"
