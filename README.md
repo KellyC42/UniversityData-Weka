@@ -1,3 +1,4 @@
+## Intro
 The first data set is of World University Rankings from kaggle and consists of three ‘.csv’ files
 from separate university ranking websites. These rankings are from Times Higher Education, Academic
 Ranking of World Universities (also known as the Shanghai Ranking), and The Center for World
@@ -8,7 +9,7 @@ This means a total of four ‘.csv’ files, one from each of the three ranking 
 salary data. The salary data needs to be combined with each university ranking file, resulting in a total
 of three ‘.arff’ files for analysis.
 
-# b
+#### Section b
 The intended goal for analyzing this data set is to determine which aspects of a university are
 most relevant or least relevant for determining the alumni’s future income. Each set of ranking data
 uses their own factors and weights for determining the overall score and global rank so, the
@@ -21,7 +22,7 @@ data set, and the results will be compared. CWUR, Shanghai, and Times may all gi
 for which factors are the most important, so it is important to compare what they have in common (to
 conclude important factors) or what is different (to conclude irrelevant factors).
 
-# c
+#### Section c
 In order to combine the three university ranking datasets with the alumni salary data set, a
 Python script was created. If information existed on alumni salaries and there was also university
 ranking data, then the university was added to a new data set. From the salary data, the ‘Starting
@@ -49,7 +50,7 @@ would have “Massachusets Institute of Technology (MIT)”. To fix this, their 
 remove enclosed parenthesis, stripped of trailing/leading whitespace, and spaces were replaced with
 underscores.
 
-# d
+#### Section d
 By knowing which aspects a university needs to have so that the alumni are most likely to have
 a larger salary, universities can then prioritize those aspects and put less importance on irrelevant
 factors. For example, a university can put a higher budget on hiring more qualified instructors, or by
@@ -59,7 +60,7 @@ When high-school graduates are trying to decide on which university to attend, t
 results of this analysis to compare schools. In order to determine where they want to go, examining the
 university’s data on published papers (for example) may be the deciding factor.
 
-# e
+#### Section e
 Weka’s Regression analysis will be used to determine the which factors are most influential on
 alumni salary. About 60% of the data will be put into a training set and the remaining will be in a test
 set. This way, the impact on salary can be viewed and the most important factors can be determined.
